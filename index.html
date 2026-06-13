@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>SecureVPN - Быстрый и безопасный VPN</title>
+</head>
+<body>
+    <div class="app">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path d="M16 2L2 9L16 16L30 9L16 2Z" fill="url(#gradient1)"/>
+                        <path d="M2 9V23L16 30V16L2 9Z" fill="url(#gradient2)"/>
+                        <path d="M30 9V23L16 30V16L30 9Z" fill="url(#gradient3)"/>
+                        <defs>
+                            <linearGradient id="gradient1" x1="0" y1="0" x2="32" y2="16">
+                                <stop offset="0%" stop-color="#667eea"/>
+                                <stop offset="100%" stop-color="#764ba2"/>
+                            </linearGradient>
+                            <linearGradient id="gradient2" x1="0" y1="0" x2="16" y2="32">
+                                <stop offset="0%" stop-color="#667eea"/>
+                                <stop offset="100%" stop-color="#5a67d8"/>
+                            </linearGradient>
+                            <linearGradient id="gradient3" x1="0" y1="0" x2="16" y2="32">
+                                <stop offset="0%" stop-color="#764ba2"/>
+                                <stop offset="100%" stop-color="#667eea"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>SecureVPN</h1>
+                    <span>Быстрый • Безопасный • Анонимный</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Статус подключения -->
+        <div class="connection-status" id="connectionStatus">
+            <div class="status-indicator">
+                <div class="pulse"></div>
+            </div>
+            <div class="status-text">
+                <h2>Не подключен</h2>
+                <p>Выберите сервер для подключения</p>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-info">
+                    <span class="stat-label">Скорость</span>
+                    <span class="stat-value">1 Gbps</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔒</div>
+                <div class="stat-info">
+                    <span class="stat-label">Шифрование</span>
+                    <span class="stat-value">AES-256</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌍</div>
+                <div class="stat-info">
+                    <span class="stat-label">Серверов</span>
+                    <span class="stat-value">50+</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Заголовок списка серверов -->
+        <div class="section-header">
+            <h3>🌐 Доступные серверы</h3>
+            <button class="refresh-btn" onclick="refreshServers()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M13.5 8C13.5 5.5 11.5 3.5 9 3.5C7.5 3.5 6.2 4.2 5.5 5.3L6.8 6C7.3 5.2 8.1 4.7 9 4.7C10.9 4.7 12.3 6.1 12.3 8C12.3 9.9 10.9 11.3 9 11.3C8.4 11.3 7.8 11.1 7.3 10.8L6.5 11.9C7.2 12.3 8.1 12.5 9 12.5C11.5 12.5 13.5 10.5 13.5 8Z"/>
+                    <path d="M2.5 8C2.5 10.5 4.5 12.5 7 12.5C8.5 12.5 9.8 11.8 10.5 10.7L9.2 10C8.7 10.8 7.9 11.3 7 11.3C5.1 11.3 3.7 9.9 3.7 8C3.7 6.1 5.1 4.7 7 4.7C7.6 4.7 8.2 4.9 8.7 5.2L9.5 4.1C8.8 3.7 7.9 3.5 7 3.5C4.5 3.5 2.5 5.5 2.5 8Z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Список серверов -->
+        <div class="servers-list" id="serversList">
+            <!-- Генерируется через JavaScript -->
+        </div>
+
+        <!-- Модальное окно -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <div class="modal-server-icon" id="modalFlag"></div>
+                    <h3 id="modalServerName"></h3>
+                </div>
+                
+                <div class="modal-stats">
+                    <div class="modal-stat">
+                        <span class="modal-stat-label">Пинг</span>
+                        <span class="modal-stat-value" id="modalPing"></span>
+                    </div>
+                    <div class="modal-stat">
+                        <span class="modal-stat-label">Загрузка</span>
+                        <span class="modal-stat-value" id="modalLoad"></span>
+                    </div>
+                    <div class="modal-stat">
+                        <span class="modal-stat-label">Пользователей</span>
+                        <span class="modal-stat-value" id="modalUsers"></span>
+                    </div>
+                </div>
+
+                <div class="modal-features">
+                    <div class="feature">✓ Безлимитный трафик</div>
+                    <div class="feature">✓ P2P разрешён</div>
+                    <div class="feature">✓ Netflix/HBO/Prime</div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-connect" onclick="confirmConnection()">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 1L1 5V10C1 14.5 4.5 18.5 10 19C15.5 18.5 19 14.5 19 10V5L10 1Z"/>
+                        </svg>
+                        Подключиться
+                    </button>
+                    <button class="btn-cancel" onclick="closeModal()">
+                        Отмена
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Уведомление -->
+        <div class="toast" id="toast">
+            <div class="toast-content">
+                <span class="toast-icon">✅</span>
+                <span class="toast-message" id="toastMessage"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
